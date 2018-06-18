@@ -1,3 +1,4 @@
+//Setting up variables
 const int RGB_PIN[3] = {9,10,11}; 
 
 const int RGB_CH_PIN[3] = {6,5,3};
@@ -16,25 +17,19 @@ bool gameWon[3] = {true, true, true};
 
 const int treshhold = 20;
 
-void CheckForWin(){
+void blink(int delaytime, int blinks){ //this function blinks the green led blinks times with a delay of delaytime
+  for(int i; i < blinks; i++){
+    WriteRGB_CH_PIN(0, 0, 0);
+    delay(delaytime);
+    WriteRGB_CH_PIN(0, 255, 0);
+    delay(delaytime);
+  }
+}
+
+void CheckForWin(){ //this function checks if the colors match and blinks one led if they match
   if (goodList[0] == gameWon[0] && goodList[1] == gameWon[1] && goodList[2] == gameWon[2]){
-      WriteRGB_CH_PIN(0, 255, 0);
-      WriteRGB_PIN(0, 0, 0);
-      delay(200);
-      WriteRGB_CH_PIN(0, 0, 0);
-      delay(200);
-      WriteRGB_CH_PIN(0, 255, 0);
-      
-      delay(200);
-      WriteRGB_CH_PIN(0, 0, 0);
-      delay(200);
-      WriteRGB_CH_PIN(0, 255, 0);
-      
-      delay(200);
-      WriteRGB_CH_PIN(0, 0, 0);
-      delay(200);
-      WriteRGB_CH_PIN(0, 255, 0);
-      delay(500);
+
+      blink(150, 6);
 
       for (int i; i < 3; i++){
         randLedColor[i] = {int(random(0, 256))};
@@ -42,13 +37,13 @@ void CheckForWin(){
   }
 }
 
-void Map_CH_to_MPD(){
+void Map_CH_to_MPD(){ //maps the value of the potmeter to the value of the led
   for(int i; i < 3; i++){
       POD_MPD[i] = map(POD_CH[i], 0, 1023, 0, 255);
   }
 }
 
-void PrintGoodList(){
+void PrintGoodList(){ //this function prints if each led is the good color, we do did for debuging, it is not necesary.
     Serial.print(goodList[0]);
     Serial.print(",");
     Serial.print(goodList[1]);
@@ -58,7 +53,7 @@ void PrintGoodList(){
   
 }
 
-void CheckTreshhold(){
+void CheckTreshhold(){ //checks if the ledvalue is in the treshhold of the example led value
   for(int i; i < 3; i++){
       if (POD_MPD[i] > randLedColor[i] - treshhold && POD_MPD[i] < randLedColor[i] + treshhold){
         goodList[i] = true;  
@@ -69,20 +64,20 @@ void CheckTreshhold(){
   }
 }
 
-void WriteRGB_PIN(int R, int G, int B){
+void WriteRGB_PIN(int R, int G, int B){ //writes the example led value to the example led
   analogWrite(RGB_PIN[0], R);
   analogWrite(RGB_PIN[1], G);
   analogWrite(RGB_PIN[2], B);
 }
 
 
-void WriteRGB_CH_PIN(int R, int G, int B){
+void WriteRGB_CH_PIN(int R, int G, int B){ // writes the led value to the led
   analogWrite(RGB_CH_PIN[0], R);
   analogWrite(RGB_CH_PIN[1], G);
   analogWrite(RGB_CH_PIN[2], B);
 }
 
-void ReadPOD_PIN(){
+void ReadPOD_PIN(){ // writes the value of the podpin to an array
   for(int i; i < 3; i++){
     POD_CH[i] = analogRead(POD_PIN[i]);
   }
